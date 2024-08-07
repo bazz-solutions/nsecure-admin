@@ -1,16 +1,12 @@
 import { Injectable } from '@angular/core';
-import {
-  HttpClient,
-  HttpHeaders,
-  HttpErrorResponse,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ApiService {
   private baseUrl: string = 'https://nsecure-backend.onrender.com/api/v1';
@@ -33,6 +29,20 @@ export class ApiService {
     return this.http
       .post<any>(url, body, { headers })
       .pipe(catchError(this.handleError<any>('login')));
+  }
+
+  getProfile(adminId: string,): Observable<any> {
+    const url = `${this.baseUrl}/me/${adminId}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const body = { adminId };
+
+    return this.http.get<any>(url, { headers }).pipe(
+      catchError(this.handleError<any>('login'))
+    );
+  }
+
+  updateUserProfile(adminId: any, profileData: any): Observable<any> {
+    return this.http.patch<any>(`${this.baseUrl}/updateuser/${adminId}`, profileData);
   }
 
   refreshToken(): Observable<any> {
